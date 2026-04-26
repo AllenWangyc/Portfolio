@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react'
 import { useHeroSnap } from './hooks'
 
+const TAGS = ['Full-stack', 'Cloud Services', 'Agent', 'DevOps'];
+
 export default function Hero({ heroSize }) {
   useHeroSnap()
   const canvasRef  = useRef(null)
@@ -145,7 +147,7 @@ export default function Hero({ heroSize }) {
         </p>
 
         <div className="flex gap-2.5 flex-wrap opacity-0 translate-y-4 animate-[fup_0.6s_0.9s_forwards]">
-          {['React', 'TypeScript', 'ASP.NET Core', 'AWS'].map(tag => (
+          {TAGS.map(tag => (
             <span
               key={tag}
               className="htag bg-white/12 border border-white/18 px-4.5 py-1.5 rounded-full text-[13px] font-medium text-white/88 whitespace-nowrap transition-all duration-200 backdrop-blur-sm hover:bg-accent hover:text-white hover:border-accent"

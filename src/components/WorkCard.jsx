@@ -37,7 +37,7 @@ function CardCanvas({ c1, c2, label }) {
   return <canvas ref={ref} className="wcard-canvas w-full h-full block" />
 }
 
-export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc, year, delay }) {
+export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc, year, delay, github }) {
   const [ref, visible] = useReveal()
   const tilt = makeTiltHandlers(7)
 
@@ -48,7 +48,7 @@ export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc
       style={{ transitionDelay: delay + 's' }}
       {...tilt}
     >
-      <div className={`relative w-full bg-bg2 overflow-hidden ${wide ? 'aspect-[21/9]' : 'aspect-video'}`}>
+      <a href={github} target="_blank" rel="noopener noreferrer" className="relative w-full bg-bg2 overflow-hidden aspect-3/2 block">
         {image
           ? <img src={image} alt={title} className="w-full h-full object-cover" />
           : <CardCanvas c1={c1} c2={c2} label={label} />
@@ -57,7 +57,7 @@ export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc
         <div className="wcard-over absolute opacity-0 pointer-events-none flex text-white">
           View Project →
         </div>
-      </div>
+      </a>
       <div className="p-7 pb-5">
         <div className="flex gap-1.75 flex-wrap mb-3">
           {tags.map(t => (
@@ -71,7 +71,7 @@ export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc
       </div>
       <div className="px-7 py-3.5 border-t border-black/5 flex items-center justify-between">
         <span className="text-xs text-muted">{year}</span>
-        <a href="#" className="wcard-link group/link text-[13px] font-medium text-accent no-underline flex items-center gap-1.5">
+        <a href={github} target="_blank" rel="noopener noreferrer" className="wcard-link group/link text-[13px] font-medium text-accent no-underline flex items-center gap-1.5">
           GitHub <span className="inline-block transition-transform duration-250 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/link:translate-x-1.5">→</span>
         </a>
       </div>

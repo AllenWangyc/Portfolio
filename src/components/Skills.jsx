@@ -7,15 +7,19 @@ const MARQUEE_ROW2 = ['Tailwind CSS', 'AWS Lambda', 'ECS', 'S3', 'Vite', 'Jest',
 const SK_CATS = [
   {
     num: '01', title: 'Frontend',
-    skills: ['React & Next.js', 'TypeScript', 'HTML / CSS / Tailwind', 'Zustand · React Query', 'Vite · Jest'],
+    skills: ['React & Next.js', 'JavaScript · TypeScript', 'Tailwind · SASS · Sylus', 'Zustand · React Query', 'Vite · Webpack'],
   },
   {
     num: '02', title: 'Backend',
-    skills: ['ASP.NET Core', 'Node.js', 'REST API · GraphQL', 'PostgreSQL · Redis', 'Entity Framework'],
+    skills: ['C# · ASP.NET Core', 'Node.js · Java · Python', 'REST API · GraphQL', 'PostgreSQL · Redis', 'Entity Framework'],
   },
   {
     num: '03', title: 'Cloud / DevOps',
     skills: ['AWS (ECS · Lambda · S3)', 'Docker', 'GitHub Actions · CI/CD', 'Linux · Nginx', 'Git'],
+  },
+  {
+    num: '04', title: 'Agent',
+    skills: ['Claude Code · Cursor · Copilot', 'Prompt engineering & Harness engineering', 'Google Stitch · Figma Make', 'Multi-agent task orchestration', 'MCP server integration'],
   },
 ]
 
@@ -29,11 +33,7 @@ function MarqueeRow({ tags, reverse, paused }) {
       {doubled.map((tag, i) => (
         <span
           key={i}
-          className={`mq-tag px-[22px] py-[9px] rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 cursor-none ${
-            i === 0 || i === tags.length
-              ? 'bg-accent text-white border border-accent'
-              : 'bg-card border border-black/7 text-text hover:bg-accent hover:text-white hover:border-accent'
-          }`}
+          className="mq-tag px-[22px] py-[9px] rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 cursor-none bg-card border border-black/7 text-text hover:bg-accent hover:text-white hover:border-accent"
         >
           {tag}
         </span>
@@ -42,12 +42,12 @@ function MarqueeRow({ tags, reverse, paused }) {
   )
 }
 
-function SkCat({ num, title, skills, delay }) {
+function SkCat({ num, title, skills, delay, cornerClass = '' }) {
   const [ref, visible] = useReveal()
   return (
     <div
       ref={ref}
-      className={`sk-cat relative p-10 px-9 border border-black/7 overflow-hidden [transition:background_250ms,opacity_700ms,transform_700ms] hover:bg-bg2 opacity-0 translate-y-9 ${visible ? 'opacity-100 translate-y-0' : ''}`}
+      className={`sk-cat relative p-10 px-9 border border-black/7 overflow-hidden [transition:background_250ms,opacity_700ms,transform_700ms] hover:bg-bg2 opacity-0 translate-y-9 ${visible ? 'opacity-100 translate-y-0' : ''} ${cornerClass}`}
       style={{ transitionDelay: delay + 's' }}
     >
       <div className="font-display text-[72px] font-black text-accent opacity-[0.08] absolute top-4 right-6 leading-none tracking-[-0.04em] pointer-events-none select-none">
@@ -97,10 +97,24 @@ export default function Skills() {
       </div>
 
       <div className="max-w-[1240px] mx-auto px-14 pb-20 max-md:px-6">
-        <div className="grid grid-cols-3 gap-[2px] rounded-card overflow-hidden max-md:grid-cols-1">
-          {SK_CATS.map((cat, i) => (
-            <SkCat key={cat.num} {...cat} delay={i * 0.1} />
-          ))}
+        <div className="grid grid-cols-2 gap-[2px] max-md:grid-cols-1">
+          {SK_CATS.map((cat, i) => {
+            const n = SK_CATS.length
+            const cols = 2
+            const isFirstRow = i < cols
+            const isLastRow  = i >= n - cols
+            const isLeft     = i % cols === 0
+            const isRight    = i % cols === 1
+            const cornerClass = [
+              isFirstRow && isLeft  ? 'rounded-tl-card'         : '',
+              isFirstRow && isLeft  ? 'max-md:rounded-tr-card'  : '',
+              isFirstRow && isRight ? 'md:rounded-tr-card'      : '',
+              isLastRow  && isLeft  ? 'md:rounded-bl-card'      : '',
+              isLastRow  && isRight ? 'rounded-br-card'         : '',
+              isLastRow  && isRight ? 'max-md:rounded-bl-card'  : '',
+            ].filter(Boolean).join(' ')
+            return <SkCat key={cat.num} {...cat} delay={i * 0.1} cornerClass={cornerClass} />
+          })}
         </div>
       </div>
     </section>
