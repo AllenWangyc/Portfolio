@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useReveal } from './hooks'
 
 const STATS = [
-  { num: '3+',  label: 'Years of full-stack experience' },
-  { num: '20+', label: 'Projects shipped to production' },
-  { num: '8+',  label: 'Technologies mastered' },
+  { num: '2',  label: 'Industry project experience' },
+  { num: '5+', label: 'Full-stack applications built' },
+  { num: '10+',  label: 'Technologies mastered' },
   { num: '∞',   label: 'Lines of TypeScript written' },
 ]
 
@@ -81,12 +81,15 @@ export default function About() {
               Building with <em className="italic text-accent">purpose,</em><br />shipping with care.
             </h3>
             <p className="text-muted text-[15px] leading-[1.75] mb-4">
-              I'm a full-stack developer who loves turning complex problems into clean, scalable solutions.
-              I care deeply about code quality, developer experience, and the small details that make software feel great to use.
+              I'm a full-stack developer focused on building scalable applications, from clean frontend experiences to robust cloud-based systems.
+              I work with modern tools and agent-driven workflows to turn complex ideas into practical, production-ready solutions.
+            </p>
+            <p className="text-muted text-[15px] leading-[1.75] mb-4">
+              I care deeply about code quality, developer experience, and the small details that make software intuitive and reliable.
             </p>
             <p className="text-muted text-[15px] leading-[1.75]">
-              When I'm not coding, I'm probably exploring new technologies, contributing to open source,
-              or thinking about system architecture over a cup of tea.
+              When I'm not coding, I'm usually exploring new technologies, experimenting with AI agents,
+              or thinking about system design and cloud architecture over a cup of tea.
             </p>
           </div>
 
