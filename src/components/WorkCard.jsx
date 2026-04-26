@@ -37,7 +37,7 @@ function CardCanvas({ c1, c2, label }) {
   return <canvas ref={ref} className="wcard-canvas w-full h-full block" />
 }
 
-export default function WorkCard({ wide, c1, c2, label, tags, title, desc, year, delay }) {
+export default function WorkCard({ wide, image, c1, c2, label, tags, title, desc, year, delay }) {
   const [ref, visible] = useReveal()
   const tilt = makeTiltHandlers(7)
 
@@ -49,7 +49,10 @@ export default function WorkCard({ wide, c1, c2, label, tags, title, desc, year,
       {...tilt}
     >
       <div className={`relative w-full bg-bg2 overflow-hidden ${wide ? 'aspect-[21/9]' : 'aspect-video'}`}>
-        <CardCanvas c1={c1} c2={c2} label={label} />
+        {image
+          ? <img src={image} alt={title} className="w-full h-full object-cover" />
+          : <CardCanvas c1={c1} c2={c2} label={label} />
+        }
         {/* wcard-over: styled by [data-card-mode="lift"] CSS in index.css */}
         <div className="wcard-over absolute opacity-0 pointer-events-none flex text-white">
           View Project →

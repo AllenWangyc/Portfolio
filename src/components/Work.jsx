@@ -47,7 +47,7 @@ export default function Work() {
         <div className="flex-1 h-px bg-black/9" />
       </div>
       <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
-        {PROJECTS.map((p, i) => <WorkCard key={i} {...p} />)}
+        {PROJECTS.map((p) => <WorkCard key={p.title} {...p} />)}
       </div>
     </section>
   )
