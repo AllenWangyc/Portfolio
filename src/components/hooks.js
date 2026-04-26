@@ -27,7 +27,7 @@ export function useHeroSnap() {
     let snapping = false
 
     const onScroll = () => {
-      if (touching || snapping) return
+      if (touching || snapping || window.__navScrollActive) return
       const y = window.scrollY
       const h = window.innerHeight
       if (!exited && y >= h * 0.5) {

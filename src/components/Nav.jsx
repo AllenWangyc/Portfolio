@@ -54,6 +54,17 @@ export default function Nav() {
     return () => observers.forEach(o => o.disconnect())
   }, [])
 
+  const handleNavClick = (e, href) => {
+    e.preventDefault()
+    const id = href.slice(1)
+    const el = document.getElementById(id)
+    if (!el) return
+    window.__navScrollActive = true
+    el.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => { window.__navScrollActive = false }, 1200)
+    setMenuOpen(false)
+  }
+
   const navCls = [
     'fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-14 z-[200]',
     'border-b border-transparent transition-[background,border-color] duration-[350ms]',
@@ -91,6 +102,7 @@ export default function Nav() {
                     color: onHero ? '#fff' : 'var(--color-accent)',
                     fontWeight: 500,
                   } : undefined}
+                  onClick={(e) => handleNavClick(e, href)}
                 >
                   {label}
                   {isActive && (
@@ -124,28 +136,31 @@ export default function Nav() {
         onClick={() => setMenuOpen(false)}
       >
         <nav
-          className="flex flex-col justify-center h-full px-10 pt-20 pb-16 gap-2"
-          onClick={e => e.stopPropagation()}
+          className="flex flex-col justify-center h-full px-10 pt-20 pb-16 gap-15"
         >
-          {navLinks.map(({ href, label }, i) => (
+          {navLinks.map(({ href, label }, i) => {
+            const isActive = activeId === href.slice(1)
+            return (
             <a
               key={href}
               href={href}
-              className="flex items-baseline gap-4 font-display text-[clamp(36px,10vw,54px)] font-black text-white/85 no-underline tracking-[-0.03em] leading-[1.1] transition-[color,opacity,transform] duration-[450ms]"
+              className="flex items-baseline gap-4 font-display text-[clamp(36px,10vw,54px)] font-black no-underline tracking-[-0.03em] leading-[1.1] transition-[color,opacity,transform] duration-[450ms]"
               style={{
                 opacity: menuOpen ? 1 : 0,
                 transform: menuOpen ? 'none' : 'translateY(24px)',
                 transitionDelay: menuOpen ? (0.06 + i * 0.07) + 's' : '0s',
                 transitionTimingFunction: 'cubic-bezier(0.22,1,0.36,1)',
+                color: isActive ? 'var(--color-accent)' : 'rgba(255,255,255,0.85)',
               }}
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => handleNavClick(e, href)}
             >
               <span className="font-body text-[12px] font-normal tracking-[0.08em] text-accent2 opacity-70">
                 0{i + 1}
               </span>
               {label}
             </a>
-          ))}
+            )
+          })}
         </nav>
       </div>
     </>
