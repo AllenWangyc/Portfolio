@@ -117,12 +117,12 @@ export default function Hero({ heroSize }) {
       <canvas id="pcanvas" ref={canvasRef} className="absolute inset-0 z-2 opacity-35" />
 
       <div className="relative z-4 max-w-130 max-md:max-w-full">
-        <p className="text-[12px] font-medium tracking-[0.14em] uppercase text-accent2 mb-7 opacity-0 translate-y-4 animate-[fup_0.6s_0.15s_forwards]">
+        <p className="text-[12px] font-medium tracking-[0.14em] md:tracking-[0.22em] uppercase text-accent2 mb-7 opacity-0 translate-y-4 animate-[fup_0.6s_0.15s_forwards]">
           Full Stack Developer
         </p>
 
         <h1
-          className="font-display font-black leading-none tracking-[-0.035em] mb-9 text-white overflow-hidden"
+          className="font-display font-black leading-none tracking-[-0.035em] md:tracking-[0.01em] mb-9 text-white overflow-hidden"
           style={{ fontSize: `clamp(38px, 11vw, ${heroSize}px)` }}
         >
           {heroLines.map((line, li) => (
@@ -141,7 +141,7 @@ export default function Hero({ heroSize }) {
           ))}
         </h1>
 
-        <p className="text-[clamp(15px,1.8vw,19px)] text-white/72 font-light max-w-120 mb-10 opacity-0 translate-y-4 animate-[fup_0.6s_0.75s_forwards]">
+        <p className="text-[clamp(15px,1.8vw,19px)] text-white/72 font-light max-w-120 mb-10 md:tracking-wide opacity-0 translate-y-4 animate-[fup_0.6s_0.75s_forwards]">
           Building scalable, production-ready applications — from thoughtful UI to robust backend architecture.
           Currently working with React, TypeScript, ASP.NET Core &amp; AWS.
         </p>
