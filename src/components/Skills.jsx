@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useReveal } from './hooks'
+import SectionHeader from './SectionHeader'
 
 const MARQUEE_ROW1 = ['React', 'TypeScript', 'Next.js', 'HTML / CSS', 'ASP.NET Core', 'Node.js', 'PostgreSQL', 'GraphQL', 'REST API', 'Docker', 'AWS', 'Git', 'CI / CD', 'Redis']
 const MARQUEE_ROW2 = ['Tailwind CSS', 'AWS Lambda', 'ECS', 'S3', 'Vite', 'Jest', 'Swagger', 'Entity Framework', 'Zustand', 'React Query', 'GitHub Actions', 'Linux', 'Nginx']
@@ -7,7 +8,7 @@ const MARQUEE_ROW2 = ['Tailwind CSS', 'AWS Lambda', 'ECS', 'S3', 'Vite', 'Jest',
 const SK_CATS = [
   {
     num: '01', title: 'Frontend',
-    skills: ['React & Next.js', 'JavaScript · TypeScript', 'Tailwind · SASS · Sylus', 'Zustand · React Query', 'Vite · Webpack'],
+    skills: ['React & Next.js', 'JavaScript · TypeScript', 'Tailwind · SASS · Stylus', 'Zustand · React Query', 'Vite · Webpack'],
   },
   {
     num: '02', title: 'Backend',
@@ -33,7 +34,7 @@ function MarqueeRow({ tags, reverse, paused }) {
       {doubled.map((tag, i) => (
         <span
           key={i}
-          className="mq-tag px-[22px] py-[9px] rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 cursor-none bg-card border border-black/7 text-text hover:bg-accent hover:text-white hover:border-accent"
+          className="mq-tag px-[22px] py-[9px] rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all duration-200 bg-card border border-black/7 text-text hover:bg-accent hover:text-white hover:border-accent"
         >
           {tag}
         </span>
@@ -47,7 +48,7 @@ function SkCat({ num, title, skills, delay, cornerClass = '' }) {
   return (
     <div
       ref={ref}
-      className={`sk-cat relative p-10 px-9 border border-black/7 overflow-hidden [transition:background_250ms,opacity_700ms,transform_700ms] hover:bg-bg2 opacity-0 translate-y-9 ${visible ? 'opacity-100 translate-y-0' : ''} ${cornerClass}`}
+      className={`sk-cat relative p-8 md:p-10 md:px-9 border border-black/7 overflow-hidden [transition:background_250ms,opacity_700ms,transform_700ms] hover:bg-bg2 opacity-0 translate-y-9 ${visible ? 'opacity-100 translate-y-0' : ''} ${cornerClass}`}
       style={{ transitionDelay: delay + 's' }}
     >
       <div className="font-display text-[72px] font-black text-accent opacity-[0.08] absolute top-4 right-6 leading-none tracking-[-0.04em] pointer-events-none select-none">
@@ -67,26 +68,16 @@ function SkCat({ num, title, skills, delay, cornerClass = '' }) {
 }
 
 export default function Skills() {
-  const [ref, visible] = useReveal()
   const [marqueePaused, setMarqueePaused] = useState(false)
 
   return (
     <section id="skills" className="bg-bg overflow-hidden">
-      <div className="max-w-[1240px] mx-auto px-14 pb-16 max-md:px-6">
-        <div
-          ref={ref}
-          className={`flex items-baseline gap-5 pt-32 mb-[72px] opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${visible ? 'opacity-100 translate-y-0' : ''}`}
-        >
-          <span className="text-[11px] font-medium tracking-[0.12em] uppercase text-accent whitespace-nowrap">02 — Skills</span>
-          <h2 className="font-display text-[clamp(32px,5vw,60px)] font-black tracking-tight leading-none">
-            Tech <em className="italic text-accent">Stack</em>
-          </h2>
-          <div className="flex-1 h-px bg-black/9" />
-        </div>
+      <div className="max-w-[1240px] mx-auto px-6 md:px-10 lg:px-14">
+        <SectionHeader index="02" label="Skills" title="Tech" accent="Stack" className="pt-20 md:pt-32" />
       </div>
 
       <div
-        className="relative mb-14"
+        className="relative mb-14" aria-hidden="true"
         onMouseEnter={() => setMarqueePaused(true)}
         onMouseLeave={() => setMarqueePaused(false)}
       >
@@ -96,7 +87,7 @@ export default function Skills() {
         <MarqueeRow tags={MARQUEE_ROW2} reverse={true}  paused={marqueePaused} />
       </div>
 
-      <div className="max-w-[1240px] mx-auto px-14 pb-20 max-md:px-6">
+      <div className="max-w-[1240px] mx-auto px-6 md:px-10 lg:px-14 pb-20">
         <div className="grid grid-cols-2 gap-[2px] max-md:grid-cols-1">
           {SK_CATS.map((cat, i) => {
             const n = SK_CATS.length

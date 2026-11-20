@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import Cursor  from './components/Cursor'
 import Nav     from './components/Nav'
 import Hero    from './components/Hero'
@@ -6,9 +6,12 @@ import Work    from './components/Work'
 import Skills  from './components/Skills'
 import About   from './components/About'
 import Contact from './components/Contact'
-import Tweaks  from './components/Tweaks'
 
-const TWEAK_DEFAULTS = { variant: 'A', accentColor: '#2e7d8f', heroSize: 86 }
+// The Tweaks panel is a dev-only tool for live-editing from an iframe host.
+// `import.meta.env.DEV` is statically false in production builds, so it is tree-shaken out.
+const Tweaks = import.meta.env.DEV ? lazy(() => import('./components/Tweaks')) : null
+
+const TWEAK_DEFAULTS = { accentColor: '#2e7d8f', heroSize: 86 }
 
 function useScrollbarSection() {
   useEffect(() => {
@@ -24,19 +27,17 @@ function useScrollbarSection() {
   }, [])
 }
 
-export default function App() {
-  const [tweaks,     setTweaks]     = useState({ ...TWEAK_DEFAULTS })
+function useDevTweaks() {
+  const [tweaks,     setTweaks]     = useState(TWEAK_DEFAULTS)
   const [tweaksOpen, setTweaksOpen] = useState(false)
 
-  useScrollbarSection()
-
   useEffect(() => {
-    document.documentElement.setAttribute('data-variant',   tweaks.variant)
-    document.documentElement.setAttribute('data-card-mode', 'lift')
+    if (!import.meta.env.DEV) return
     document.documentElement.style.setProperty('--color-accent', tweaks.accentColor)
-  }, [tweaks.variant, tweaks.accentColor])
+  }, [tweaks.accentColor])
 
   useEffect(() => {
+    if (!import.meta.env.DEV) return
     const handler = (e) => {
       if (e.data?.type === '__activate_edit_mode')   setTweaksOpen(true)
       if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false)
@@ -47,6 +48,7 @@ export default function App() {
   }, [])
 
   function updateTweak(key, value) {
+    if (!import.meta.env.DEV) return
     setTweaks(prev => {
       const next = { ...prev, [key]: value }
       window.parent.postMessage({ type: '__edit_mode_set_keys', edits: next }, '*')
@@ -54,19 +56,37 @@ export default function App() {
     })
   }
 
+  return { tweaks, tweaksOpen, updateTweak }
+}
+
+export default function App() {
+  const { tweaks, tweaksOpen, updateTweak } = useDevTweaks()
+  useScrollbarSection()
+
   return (
     <>
       <Cursor />
       <Nav />
-      <Hero heroSize={tweaks.heroSize} />
-      <Work />
-      <Skills />
-      <About />
-      <Contact />
-      <footer className="text-center py-7 text-xs text-muted border-t border-black/6">
-        © 2026 Yuchen Wang · Turning ideas into real-world apps
+      <main>
+        <Hero heroSize={tweaks.heroSize} />
+        <Work />
+        <Skills />
+        <About />
+        <Contact />
+      </main>
+      <footer className="border-t border-black/6 px-6 md:px-10 lg:px-14 pt-7 pb-[calc(1.75rem+env(safe-area-inset-bottom))] text-xs text-muted">
+        <div className="max-w-[1240px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span>© {new Date().getFullYear()} Yuchen Wang</span>
+          <a href="#hero" className="text-muted no-underline transition-colors hover:text-accent">
+            Back to top ↑
+          </a>
+        </div>
       </footer>
-      <Tweaks tweaks={tweaks} updateTweak={updateTweak} visible={tweaksOpen} />
+      {Tweaks && (
+        <Suspense fallback={null}>
+          <Tweaks tweaks={tweaks} updateTweak={updateTweak} visible={tweaksOpen} />
+        </Suspense>
+      )}
     </>
   )
 }

@@ -19,7 +19,7 @@ export default function Contact() {
   const [ref, visible] = useReveal()
 
   return (
-    <section id="contact" className="text-center py-32 px-14 bg-bg max-md:px-6">
+    <section id="contact" className="text-center py-20 md:py-32 px-6 md:px-10 lg:px-14 bg-bg">
       <div
         ref={ref}
         className={`max-w-180 mx-auto opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${visible ? 'opacity-100 translate-y-0' : ''}`}
@@ -38,9 +38,10 @@ export default function Contact() {
           {SOCIALS.map(({ label, href, icon }) => (
             <a
               key={label} href={href}
-              className="ct-soc inline-flex items-center gap-2 px-6 py-2.75 border-[1.5px] border-black/10 rounded-full text-sm font-medium text-text no-underline transition-all duration-220 hover:bg-accent hover:text-white hover:border-accent"
+              {...(href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })}
+              className="inline-flex items-center gap-2 px-6 py-2.75 border-[1.5px] border-black/10 rounded-full text-sm font-medium text-text no-underline transition-all duration-220 hover:bg-accent hover:text-white hover:border-accent"
             >
-              {icon}{label}
+              <span aria-hidden="true">{icon}</span>{label}
             </a>
           ))}
         </div>

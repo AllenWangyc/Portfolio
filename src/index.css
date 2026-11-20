@@ -9,36 +9,33 @@
   --color-accent2: #6fa8b8;
   --color-card:    #f5f8fa;
 
-  --font-family-display: 'Playfair Display', Georgia, serif;
-  --font-family-body:    'DM Sans', sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', sans-serif;
 
   --radius-card: 16px;
 }
 
-/* Variant B overrides — cascade automatically into all Tailwind utilities */
-[data-variant="B"] {
-  --color-bg:      #f0f4f7;
-  --color-bg2:     #deeaef;
-  --color-text:    #18242e;
-  --color-muted:   #516475;
-  --color-card:    #f8fbfd;
-  --font-family-display: 'Syne', sans-serif;
-  --radius-card:   4px;
-}
-
-/* Explicit variant-B-only classes (e.g. dot-grid overlay) */
-@custom-variant variant-b ([data-variant="B"] &);
+/* Landscape phones: short viewport where the hero needs tighter type/spacing */
+@custom-variant short (@media (orientation: landscape) and (max-height: 500px));
 
 @layer base {
   html { scroll-behavior: smooth; }
   body {
     background-color: var(--color-bg);
     color: var(--color-text);
-    font-family: var(--font-family-body);
+    font-family: var(--font-body);
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: none;
-    transition: background 0.4s, color 0.4s;
+  }
+
+  /* Custom cursor is only enabled (via this class) on fine-pointer, hover-capable devices */
+  html.custom-cursor,
+  html.custom-cursor * { cursor: none !important; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
   }
 }
 
@@ -70,7 +67,6 @@ html[data-in-hero="true"] { scrollbar-width: none; -ms-overflow-style: none; }
   from { transform: scaleX(0); opacity: 0; }
   to   { transform: scaleX(1); opacity: 1; }
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Hero line clip-path reveal ── */
 .hero-line-inner {
@@ -88,14 +84,6 @@ html[data-in-hero="true"] { scrollbar-width: none; -ms-overflow-style: none; }
     to right,
     rgba(18,32,46,0.55) 0%,
     rgba(18,32,46,0.40) 42%,
-    rgba(18,32,46,0.18) 100%
-  );
-}
-[data-variant="B"] .hero-bg-overlay {
-  background: linear-gradient(
-    to right,
-    rgba(18,32,46,0.58) 0%,
-    rgba(18,32,46,0.42) 42%,
     rgba(18,32,46,0.18) 100%
   );
 }
@@ -127,42 +115,13 @@ html[data-in-hero="true"] { scrollbar-width: none; -ms-overflow-style: none; }
 .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); width: 22px; }
 
-/* ── Card mode: lift (data-attr descendant selectors require CSS) ── */
-[data-card-mode="lift"] .wcard-canvas {
-  filter: brightness(0.92);
-  transition: filter 0.45s ease, transform 0.55s ease;
-}
-@media (hover: hover) {
-  [data-card-mode="lift"] .wcard:hover .wcard-canvas {
-    filter: brightness(1.05);
-    transform: scale(1.025);
-  }
-  [data-card-mode="lift"] .wcard:hover .wcard-over {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-[data-card-mode="lift"] .wcard-over {
-  inset: auto 0 0 0;
-  height: 46%;
-  background: linear-gradient(to top, rgba(12,22,32,0.72) 0%, rgba(12,22,32,0.35) 55%, transparent 100%);
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: 0 24px 18px;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transform: translateY(8px);
-  transition: opacity 0.3s, transform 0.3s;
-}
-
 /* ── prefers-reduced-motion ── */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
   .hero-line-inner { opacity: 1 !important; transform: none !important; }
-  #pcanvas { display: none !important; }
 }

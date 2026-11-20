@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
-import { useReveal } from './hooks'
+import { useReveal, prefersReducedMotion } from './hooks'
+import SectionHeader from './SectionHeader'
 
+// TODO(Yuchen): confirm these numbers before publishing.
 const STATS = [
-  { num: '2',  label: 'Industry project experience' },
-  { num: '5+', label: 'Full-stack applications built' },
-  { num: '10+',  label: 'Technologies mastered' },
-  { num: '∞',   label: 'Lines of TypeScript written' },
+  { num: '2',    label: 'Industry projects delivered' },
+  { num: '6',    label: 'Full-stack apps shipped' },
+  { num: '25+',  label: 'Technologies in daily use' },
+  { num: '250+', label: 'Automated test files in Linshe' },
 ]
 
 function useCountUp(target, active, duration = 1200) {
@@ -16,6 +18,7 @@ function useCountUp(target, active, duration = 1200) {
     if (!active) return
     const num = parseInt(target)
     if (isNaN(num)) return
+    if (prefersReducedMotion()) { setCount(num); return }
     const start = performance.now()
     const tick = (now) => {
       const elapsed = now - start
@@ -40,10 +43,10 @@ function StatBox({ num, label, delay }) {
   return (
     <div
       ref={ref}
-      className={`bg-card rounded-card border border-black/6 p-7 opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${visible ? 'opacity-100 translate-y-0' : ''}`}
+      className={`bg-card rounded-card border border-black/6 p-5 sm:p-7 opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${visible ? 'opacity-100 translate-y-0' : ''}`}
       style={{ transitionDelay: delay + 's' }}
     >
-      <div className="font-display text-[clamp(36px,4vw,48px)] font-black text-accent tracking-[-0.03em] leading-none mb-1.5">
+      <div className="font-display lining-nums tabular-nums text-[clamp(32px,4vw,48px)] font-black text-accent tracking-[-0.03em] leading-none mb-1.5">
         {isSpecial ? num : count + suffix}
       </div>
       <div className="text-[13px] text-muted">{label}</div>
@@ -52,26 +55,16 @@ function StatBox({ num, label, delay }) {
 }
 
 export default function About() {
-  const [headerRef, headerVisible] = useReveal()
   const [textRef, textVisible] = useReveal()
 
   return (
     <section id="about" className="bg-bg2 overflow-hidden">
-      <div className="max-w-310 mx-auto px-14 max-md:px-6">
-        <div
-          ref={headerRef}
-          className={`flex items-baseline gap-5 pt-32 mb-18 opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${headerVisible ? 'opacity-100 translate-y-0' : ''}`}
-        >
-          <span className="text-[11px] font-medium tracking-[0.12em] uppercase text-accent whitespace-nowrap">03 — About</span>
-          <h2 className="font-display text-[clamp(32px,5vw,60px)] font-black tracking-tight leading-none">
-            About <em className="italic text-accent">Me</em>
-          </h2>
-          <div className="flex-1 h-px bg-black/9" />
-        </div>
+      <div className="max-w-310 mx-auto px-6 md:px-10 lg:px-14">
+        <SectionHeader index="03" label="About" title="About" accent="Me" className="pt-20 md:pt-32" />
       </div>
 
-      <div className="max-w-310 mx-auto px-14 pb-32 max-md:px-6">
-        <div className="grid grid-cols-2 gap-20 items-center max-md:grid-cols-1 max-md:gap-10">
+      <div className="max-w-310 mx-auto px-6 md:px-10 lg:px-14 pb-20 md:pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
 
           <div
             ref={textRef}
@@ -93,7 +86,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-2 gap-3 sm:gap-5">
             {STATS.map(({ num, label }, i) => (
               <StatBox key={label} num={num} label={label} delay={i * 0.08} />
             ))}

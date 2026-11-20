@@ -6,6 +6,7 @@ const ACCENT_COLORS = [
   { color: '#8a6a5a', label: 'Warm Clay'    },
 ]
 
+// Dev-only live-editing panel (loaded by App.jsx only when import.meta.env.DEV).
 export default function Tweaks({ tweaks, updateTweak, visible }) {
   return (
     <div
@@ -15,31 +16,15 @@ export default function Tweaks({ tweaks, updateTweak, visible }) {
       <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-[#71717a] mb-5">Tweaks</div>
 
       <div className="mb-[18px]">
-        <span className="text-[13px] font-medium mb-2.5 block text-[#18181b]">Style Variant</span>
-        <div className="flex gap-2">
-          {[{ v: 'A', label: 'Editorial' }, { v: 'B', label: 'Geometric' }].map(({ v, label }) => (
-            <button
-              key={v}
-              className={`tp-btn flex-1 py-2 px-1.5 border-[1.5px] rounded-lg text-xs font-medium cursor-pointer transition-all duration-[180ms] ${
-                tweaks.variant === v
-                  ? 'bg-accent text-white border-accent'
-                  : 'bg-white text-[#18181b] border-black/10'
-              }`}
-              onClick={() => updateTweak('variant', v)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-[18px]">
         <span className="text-[13px] font-medium mb-2.5 block text-[#18181b]">Accent Color</span>
         <div className="flex gap-2">
           {ACCENT_COLORS.map(({ color, label }) => (
-            <div
+            <button
+              type="button"
               key={color}
-              className={`tp-c w-[26px] h-[26px] rounded-full border-[2.5px] cursor-pointer transition-[transform,border-color] duration-[180ms] hover:scale-110 ${
+              aria-label={label}
+              aria-pressed={tweaks.accentColor === color}
+              className={`w-[26px] h-[26px] rounded-full border-[2.5px] cursor-pointer transition-[transform,border-color] duration-[180ms] hover:scale-110 ${
                 tweaks.accentColor === color ? 'border-[#1a1510]' : 'border-transparent'
               }`}
               style={{ background: color }}
@@ -53,6 +38,7 @@ export default function Tweaks({ tweaks, updateTweak, visible }) {
       <div>
         <span className="text-[13px] font-medium mb-2.5 block text-[#18181b]">Hero Text Size</span>
         <input
+          aria-label="Hero text size"
           type="range" min="60" max="130"
           value={tweaks.heroSize}
           style={{ width: '100%', accentColor: 'var(--color-accent)' }}
