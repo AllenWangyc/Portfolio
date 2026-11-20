@@ -8,59 +8,62 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev      # Start dev server (Vite, default port 5173)
 npm run build    # Production build
 npm run preview  # Preview production build
+npm run images   # Generate responsive WebP variants for project screenshots (see Work section)
 ```
 
 No test framework is configured.
 
 ## UI Development Rules
 
-- **Styling:** Use TailwindCSS utility classes for all new styles. Do not add rules to `src/index.css` for new UI work — that file is legacy and only maintained for existing global tokens and animations.
-- **Responsive design:** Every UI change must account for both desktop and mobile. Use Tailwind's responsive prefixes (`sm:`, `md:`, `lg:`) and verify layouts at the `768px` breakpoint (the existing mobile breakpoint in `src/index.css`).
+- **Styling:** Use TailwindCSS utility classes for all new styles. Do not add rules to `src/index.css` for new UI work — that file only holds theme tokens, keyframes, and the few global rules Tailwind can't express (focus ring, custom-cursor gating, reduced-motion, hamburger `nth-child`).
+- **Responsive design:** Every UI change must account for phone, tablet and desktop. Use Tailwind's responsive prefixes (`sm:`, `md:`, `lg:`) and verify at 390px, 768px (`md`), 1024px (`lg`) and 1440px. Landscape phones use the custom `short:` variant (landscape and max-height 500px).
+- **Interaction:** Tailwind v4 `hover:` only applies on hover-capable devices. Anything pointer-driven in JS (tilt, custom cursor, particles) must check `hasFinePointer()` and `prefersReducedMotion()` from `hooks.js`.
 
 ## Architecture
 
-Single-page portfolio built with React 18 + Vite. All sections render as a continuous scroll page in this order: `Cursor → Nav → Hero → Work → Skills → About → Contact → inline <footer> → Tweaks`.
+Single-page portfolio built with React 18 + Vite. Render order: `Cursor → Nav → <main>(Hero → Work → Skills → About → Contact) → <footer> → Tweaks (dev only)`.
 
 **Entry point:** `src/main.jsx` → `src/App.jsx`
 
-### App-level state (`src/App.jsx`)
-- `tweaks` state holds `{ variant, accentColor, heroSize }` and drives global CSS custom property `--color-accent` and `data-variant` / `data-card-mode` attributes on `<html>`.
-- `Tweaks` panel is toggled via `postMessage` from a parent frame (`__activate_edit_mode` / `__deactivate_edit_mode`), enabling live preview editing from an iframe host.
-- `updateTweak` posts `__edit_mode_set_keys` back to the parent frame on every change.
+### App-level (`src/App.jsx`)
+- `useDevTweaks()` — `tweaks` state `{ accentColor, heroSize }`. The `Tweaks` panel is lazy-loaded **only when `import.meta.env.DEV`**, so it is tree-shaken out of production. In dev it is toggled via `postMessage` from a parent frame (`__activate_edit_mode` / `__deactivate_edit_mode`), and `updateTweak` posts `__edit_mode_set_keys` back.
+- `useScrollbarSection()` — Sets `data-in-hero` on `<html>` (IntersectionObserver on `#hero`); CSS hides the scrollbar while the hero is visible.
 
 ### Shared hooks (`src/components/hooks.js`)
-- `useReveal(threshold)` — IntersectionObserver-based scroll reveal; returns `[ref, visible]`. Applied to section headers to add `.on` class to `.rev` elements.
-- `useHeroSnap()` — Scroll-snap logic for the Hero section: auto-snaps to `100vh` when user scrolls past 50% of viewport height. Skips snap on touch to preserve mobile free-scroll.
-- `makeTiltHandlers(intensity)` — Returns `{ onMouseEnter, onMouseMove, onMouseLeave }` for 3D card tilt effects with glare overlay.
+- `useReveal(threshold)` — IntersectionObserver scroll reveal; returns `[ref, visible]`. Elements toggle `opacity-0 translate-y-9` → `opacity-100 translate-y-0`.
+- `useMediaQuery(query)`, `hasFinePointer()`, `prefersReducedMotion()` and the `FINE_POINTER_QUERY` / `REDUCED_MOTION_QUERY` constants.
+- `makeTiltHandlers(intensity)` — `{ onMouseEnter, onMouseMove, onMouseLeave }` for 3D card tilt + glare; no-op on touch or reduced motion.
 
-### App-level utility hook (`src/App.jsx`)
-- `useScrollbarSection()` — Sets `data-in-hero` attribute on `<html>` via IntersectionObserver on `#hero`; used by CSS to hide the scrollbar while the hero is visible.
+### Shared components
+- `SectionHeader` — "01 — Work" eyebrow + display title + rule. It stacks on mobile and sits in one row from `md`. Use it for every new section.
+- `Cursor` — Dot + trailing ring. Mounted only for `(hover: hover) and (pointer: fine)` without reduced motion. It adds `custom-cursor` to `<html>`, which hides the native cursor. Its rAF loop stops once the ring catches up.
 
 ### Theming
-Two variants controlled by `data-variant` on `<html>`:
-- **Variant A** (default): `--font-family-display: 'Playfair Display'`, rounded corners (`--radius-card: 16px`), teal accent.
-- **Variant B**: `--font-family-display: 'Syne'`, sharp corners (`--radius-card: 4px`), same teal accent with a dot-grid overlay on Hero.
-
-All theme tokens are defined in a TailwindCSS v4 `@theme` block in `src/index.css`. Variant B overrides specific tokens via a `[data-variant="B"]` selector beneath it.
+Single theme. Tokens live in the TailwindCSS v4 `@theme` block in `src/index.css`. Tailwind v4 token names matter: use `--font-display` / `--font-body` (→ `font-display` / `font-body` utilities), `--color-*`, and `--radius-card`. Display font is Playfair Display; body font is DM Sans (Google Fonts in `index.html`).
 
 ### Hero section (`src/components/Hero.jsx`)
-- Animated canvas background: 55 particles with mouse-repulsion and connecting lines, drawn with the `--color-accent` color.
-- Background image at `/uploads/bg_image.jpg` with a `heroZoom` keyframe animation.
-- `heroSize` prop controls the `font-size` of the `<h1>`.
+- Particle canvas (`useParticles`): 55 particles with pointer repulsion, drawn in `--color-accent`.
+  - Rendered at devicePixelRatio and runs only while the hero is on screen.
+  - Skipped on touch devices and under reduced motion.
+- Background image `/uploads/bg_image.jpg` (preloaded in `index.html`). The `heroZoom` animation runs only from `md` up.
+- Height is `min-h-svh`. The h1 size is `clamp(38px, 6.5vw, var(--hero-size))`, where `heroSize` sets `--hero-size`.
+- CTAs: "View Work" goes to `#work` and "Get in touch" goes to `#contact`.
 
 ### Work section (`src/components/Work.jsx` + `WorkCard.jsx`)
-- Project data is a static `PROJECTS` array in `Work.jsx` — update this to add/modify portfolio projects.
-- Cards use `makeTiltHandlers` for 3D hover tilt.
-- Wide cards (`wide: true`) span both grid columns; narrow cards are 16/9 aspect ratio.
+- Project data is the static `PROJECTS` array in `Work.jsx`. Fields:
+  - `title`, `desc`, `tags`, `year`, `github`
+  - optional `demo`: when set, the image links to the demo and the footer shows "Live Demo" plus "GitHub"
+  - `wide` (spans both columns; only the featured first project)
+  - `delay`: alternate 0.1 / 0.2 for left and right columns
+  - `image`
+  - `c1` / `c2` / `label`: fallback canvas when there is no image
+- **Images:** put the original screenshot (3:2, ≥1536px wide) in `assets/works/<name>.png|jpg|webp`. Run `npm run images` to write `public/uploads/works/<name>-768.webp` and `-1536.webp`, then set `image: '<name>'`. `WorkCard` builds the `srcSet` and `sizes`, lazy-loads every card except the first, and sets `width`/`height` to avoid layout shift.
+- Tags show at most 5; the rest collapse into a `+N` chip.
 
-### Scroll reveal pattern
-Sections wrap their reveal targets with `className="rev"` and toggle `"rev on"` using `useReveal`. This CSS transition fades elements up on scroll.
+### Nav (`src/components/Nav.jsx`)
+- Active section tracking via one IntersectionObserver.
+- Mobile menu is an accessible dialog: `aria-expanded`, Esc closes it, focus moves to the first link, and it is `inert` while closed.
+- Respects safe-area insets.
 
-### LiquidBackground component (`src/components/LiquidBackground.jsx`)
-Three.js WebGL canvas that renders a background image with interactive ripple/liquid distortion (mouse and touch). Accepts props: `imageSrc`, `displacementScale`, `ambientScale`, `chromaticAberration`, `rippleDecay`, `waveFrontSharpness`. Currently defined but not yet used in any section.
-
-### CSS structure (`src/index.css`)
-TailwindCSS v4 flat file: starts with `@import "tailwindcss"`, then an `@theme` block for design tokens, then a `[data-variant="B"]` override block. Component-specific styles follow, commented with `/* ── SectionName ── */` headers. Responsive breakpoint at `max-width: 768px` near the bottom of the file.
-
-### Duplicate/legacy files
-The root `App.jsx` and `components/` directory are legacy files from before the Vite migration — the active source is entirely under `src/`. Do not edit the root-level duplicates.
+### SEO
+`index.html` has description, Open Graph and Twitter tags, and `theme-color`. `public/og.jpg` is a 1200×630 hero screenshot. `og:image` is relative until a production domain is set. `public/robots.txt` allows all.

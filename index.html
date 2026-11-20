@@ -2,14 +2,37 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/uploads/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Yuchen Wang — Full Stack Developer</title>
+    <meta name="description" content="Yuchen Wang is a full-stack developer in Auckland building production-ready apps with React, TypeScript, Next.js, ASP.NET Core and AWS." />
+    <meta name="author" content="Yuchen Wang" />
+    <meta name="theme-color" content="#12202e" />
+
+    <link rel="icon" type="image/jpeg" href="/uploads/logo.png" />
+    <link rel="apple-touch-icon" href="/uploads/logo.png" />
+
+    <!-- Open Graph / social previews. Social crawlers need absolute URLs:
+         replace "/og.jpg" with "https://<your-domain>/og.jpg" and set og:url once the domain is final. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Yuchen Wang — Full Stack Developer" />
+    <meta property="og:description" content="Turning ideas into real-world apps. Selected projects in React, Next.js, TypeScript, .NET and AWS." />
+    <meta property="og:image" content="/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Hero background is a CSS background; preload so it isn't discovered late (LCP). -->
+    <link rel="preload" as="image" href="/uploads/bg_image.jpg" fetchpriority="high" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   </head>
   <body>
+    <noscript>
+      <p style="padding:2rem;font-family:sans-serif">Yuchen Wang — Full Stack Developer. This site needs JavaScript; see
+        <a href="https://github.com/AllenWangyc">github.com/AllenWangyc</a>.</p>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
