@@ -1,10 +1,12 @@
-import { useReveal } from './hooks'
+import SectionHeader from './SectionHeader'
 import WorkCard from './WorkCard'
 
+// image: base name of a screenshot in assets/works/ (run `npm run images` after adding one)
+// demo:  optional live URL — when set, the card's primary link goes to the demo
 const PROJECTS = [
   {
     wide: true,
-    image: '/uploads/works/linshe.webp',
+    image: 'linshe',
     c1: '#65a30d', c2: '#a3e635', label: 'Linshe',
     tags: ['Next.js', 'TypeScript', 'Supabase', 'PostgreSQL', 'Tailwind CSS', 'Claude Code'],
     title: 'Linshe – Neighbourhood Second-hand Marketplace',
@@ -14,7 +16,7 @@ const PROJECTS = [
   },
   {
     wide: false,
-    image: '/uploads/works/lymoon.png',
+    image: 'lymoon',
     c1: '#7c3aed', c2: '#a78bfa', label: 'Lymoon',
     tags: ['React Native', 'Expo', 'TypeScript', '.NET', 'REST API', 'Zustand', 'React Query'],
     title: 'Lymoon – Collaborative Schedule Management App',
@@ -24,7 +26,7 @@ const PROJECTS = [
   },
   {
     wide: false,
-    image: '/uploads/works/factvax.png',
+    image: 'factvax',
     c1: '#0ea5e9', c2: '#38bdf8', label: 'FactVax',
     tags: ['React', 'TypeScript', 'Node.js', 'AWS', 'Chrome Extension', 'REST API'],
     title: 'FactVax – Vaccine Misinformation Detector',
@@ -34,7 +36,7 @@ const PROJECTS = [
   },
   {
     wide: false,
-    image: '/uploads/works/nike.png',
+    image: 'nike',
     c1: '#111827', c2: '#6b7280', label: 'Nike Shoes Shop',
     tags: ['React', 'Tailwind CSS', 'Responsive Design', 'JavaScript'],
     title: 'Nike Shoes Shop',
@@ -44,7 +46,7 @@ const PROJECTS = [
   },
   {
     wide: false,
-    image: '/uploads/works/magic-kitchen.png',
+    image: 'magic-kitchen',
     c1: '#f97316', c2: '#fb923c', label: 'Magic Kitchen',
     tags: ['React', 'TypeScript', 'AI API', 'Prompt Engineering', 'REST API'],
     title: 'Magic Kitchen',
@@ -54,7 +56,7 @@ const PROJECTS = [
   },
   {
     wide: false,
-    image: '/uploads/works/pikachu.png',
+    image: 'pikachu',
     c1: '#facc15', c2: '#fbbf24', label: 'Pokedex',
     tags: ['React', 'JavaScript', 'REST API', 'Infinite Scroll', 'Filtering', 'CSS'],
     title: 'Pokedex',
@@ -65,21 +67,11 @@ const PROJECTS = [
 ]
 
 export default function Work() {
-  const [ref, visible] = useReveal()
   return (
-    <section className="max-w-[1240px] mx-auto px-14 py-32 max-md:px-6 max-md:py-20" id="work">
-      <div
-        ref={ref}
-        className={`flex items-baseline gap-5 mb-18 opacity-0 translate-y-9 transition-[opacity,transform] duration-700 ${visible ? 'opacity-100 translate-y-0' : ''}`}
-      >
-        <span className="text-[11px] font-medium tracking-[0.12em] uppercase text-accent whitespace-nowrap">01 — Work</span>
-        <h2 className="font-display text-[clamp(32px,5vw,60px)] font-black tracking-tight leading-none">
-          Selected <em className="italic text-accent">Projects</em>
-        </h2>
-        <div className="flex-1 h-px bg-black/9" />
-      </div>
-      <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
-        {PROJECTS.map((p) => <WorkCard key={p.title} {...p} />)}
+    <section className="max-w-[1240px] mx-auto px-6 md:px-10 lg:px-14 py-20 md:py-32" id="work">
+      <SectionHeader index="01" label="Work" title="Selected" accent="Projects" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {PROJECTS.map((p, i) => <WorkCard key={p.title} {...p} priority={i === 0} />)}
       </div>
     </section>
   )
